@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Muscle Scraper | Elite Recovery — Fix Pain. Restore Movement. Upgrade Performance.</title>
+<meta name="description" content="Targeted muscle scraping (IASTM) to remove restrictions and restore movement. Bury & Preston. 478 five-star reviews. Helping people when traditional therapy failed.">
+<link rel="icon" type="image/png" href="skull.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Muscle Scraper">
+<style>
+  :root{
+    --bg:#0b0b0b; --panel:#141414; --panel2:#1b1b1b; --line:#2a2a2a;
+    --ink:#f4f1ea; --mut:#a8a29e; --lime:#b5f23d; --lime-dk:#8fc91f;
+    --red:#ef4444; --radius:16px; --max:1120px;
+    --font:"Helvetica Neue",Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img,svg{display:block}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+  .lime{color:var(--lime)}
+  h1,h2,h3{line-height:1.05;letter-spacing:-.02em;font-weight:800}
+  h2{font-size:clamp(28px,5vw,46px);text-transform:uppercase}
+  .eyebrow{color:var(--lime);font-weight:800;letter-spacing:.18em;text-transform:uppercase;font-size:13px}
+  .sec{padding:72px 0}
+  .sec-tight{padding:48px 0}
+  .muted{color:var(--mut)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;border-radius:999px;padding:14px 26px;cursor:pointer;border:2px solid transparent;font-size:15px;transition:.15s;text-transform:uppercase;letter-spacing:.03em}
+  .btn-lime{background:var(--lime);color:#0b0b0b}
+  .btn-lime:hover{background:var(--lime-dk)}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+  .btn-red{background:var(--red);color:#fff}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(11,11,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.02em}
+  .brand .logoword{font-size:18px;line-height:1}
+  .brand .logoword small{display:block;color:var(--lime);font-size:9px;letter-spacing:.32em;font-weight:800}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{font-size:14px;font-weight:600;color:var(--mut)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{padding:10px 20px;font-size:13px}
+  .menu-toggle{display:none;background:none;border:0;color:var(--ink);font-size:26px;cursor:pointer}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);min-height:86vh;display:flex;align-items:center}
+  #muscleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;touch-action:pan-y;cursor:crosshair}
+  .hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(11,11,11,.97),rgba(11,11,11,.86) 36%,rgba(11,11,11,.4) 66%,rgba(11,11,11,.6))}
+  .hero-inner{position:relative;z-index:2;width:100%;pointer-events:none}
+  .hero-copy{max-width:620px;padding:54px 0}
+  .hero-ctas a,.hero-ctas button{pointer-events:auto}
+  .scrape-hint{position:absolute;z-index:2;right:24px;bottom:22px;color:var(--mut);font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);padding:7px 13px;border-radius:999px;background:rgba(11,11,11,.55);transition:opacity .6s;pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:64px 0 72px}
+  .hero h1{font-size:clamp(40px,8vw,82px);text-transform:uppercase}
+  .hero p.lead{font-size:clamp(17px,2.4vw,20px);color:var(--mut);max-width:46ch;margin-top:18px}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .badges{display:flex;gap:22px;flex-wrap:wrap;margin-top:34px}
+  .badge b{display:block;font-size:24px;color:var(--lime);font-weight:800}
+  .badge span{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+  .hero-art{display:flex;justify-content:center;align-items:center}
+  .skullcard{background:radial-gradient(120% 120% at 50% 0%,#1c1c1c,#0b0b0b);border:1px solid var(--line);border-radius:24px;padding:38px;width:100%;max-width:380px;text-align:center}
+  .skullcard .tag{color:var(--lime);font-weight:800;letter-spacing:.14em;font-size:12px;margin-top:14px;text-transform:uppercase}
+  .skullcard .sub{color:var(--mut);font-size:13px;margin-top:8px}
+
+  /* GENERIC GRID */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .card h3{font-size:18px;text-transform:uppercase;margin-bottom:8px}
+  .chiplist{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;color:var(--mut)}
+
+  /* PRICING */
+  .price-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:26px}
+  .ptable{display:grid;gap:12px}
+  .prow{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .prow.start{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
+  .prow.emerg{border-color:var(--red)}
+  .prow .pname{font-weight:800;text-transform:uppercase;font-size:15px;letter-spacing:.01em}
+  .prow .pdesc{color:var(--mut);font-size:13px;margin-top:3px;text-transform:none;font-weight:400;letter-spacing:0}
+  .prow .ptier{font-size:11px;color:var(--lime);font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  .prow.emerg .ptier{color:var(--red)}
+  .prow .pright{text-align:right;white-space:nowrap}
+  .prow .pmins{font-size:11px;color:var(--lime);font-weight:700;letter-spacing:.1em}
+  .prow.emerg .pmins{color:var(--red)}
+  .prow .pprice{font-size:26px;font-weight:800}
+  .price-note{margin-top:18px;color:var(--mut);font-size:14px}
+
+  /* LOCATIONS */
+  .loc{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column}
+  .loc h3{font-size:17px;text-transform:uppercase}
+  .loc .who{color:var(--lime);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+  .loc address{font-style:normal;color:var(--mut);font-size:14px;margin:10px 0}
+  .hours{font-size:13px;color:var(--mut);border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+  .hours div{display:flex;justify-content:space-between;padding:2px 0}
+  .loc .btn{margin-top:18px;justify-content:center}
+
+  /* REVIEWS */
+  .rev{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .rev .stars{color:var(--lime);letter-spacing:2px;font-size:14px}
+  .rev p{margin:10px 0;font-size:15px}
+  .rev .by{color:var(--mut);font-size:13px;font-weight:700}
+
+  /* EXPECT / AFTERCARE */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--lime);border-radius:10px;padding:16px 18px;font-size:14px;color:var(--mut)}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:48px 0 90px;color:var(--mut)}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+  footer a:hover{color:var(--lime)}
+  .socials{display:flex;gap:14px;margin-top:12px}
+  .socials a{font-size:13px;font-weight:700;color:var(--ink)}
+
+  /* CHAT WIDGET */
+  #chatBtn{position:fixed;right:20px;bottom:20px;z-index:80;background:var(--lime);color:#0b0b0b;border:0;border-radius:999px;padding:14px 22px;font-weight:800;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.5);display:flex;gap:8px;align-items:center;text-transform:uppercase;letter-spacing:.03em;font-size:14px}
+  #chatPanel{position:fixed;right:20px;bottom:20px;z-index:90;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 32px);background:var(--panel);border:1px solid var(--line);border-radius:18px;display:none;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.6)}
+  #chatPanel.open{display:flex}
+  .chat-head{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--line);background:var(--panel2)}
+  .chat-head .dot{width:9px;height:9px;border-radius:50%;background:var(--lime)}
+  .chat-head b{font-size:15px}
+  .chat-head small{color:var(--mut);font-size:12px;display:block}
+  .chat-head .x{margin-left:auto;background:none;border:0;color:var(--mut);font-size:22px;cursor:pointer}
+  .chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:85%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.45}
+  .msg.bot{background:var(--panel2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+  .msg.user{background:var(--lime);color:#0b0b0b;align-self:flex-end;font-weight:700;border-bottom-right-radius:4px}
+  .msg.bot a{color:var(--lime);font-weight:700;text-decoration:underline}
+  .chat-opts{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel)}
+  .opt{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--lime);color:var(--lime)}
+  .opt.book{background:var(--lime);color:#0b0b0b;border-color:var(--lime)}
+  .opt.restart{color:var(--mut);font-weight:600}
+  .chat-disc{font-size:11px;color:var(--mut);padding:0 16px 12px;background:var(--panel)}
+
+  /* SESSION FINDER */
+  .finder-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px;margin-top:24px;max-width:780px}
+  .finder-q{font-size:clamp(18px,3vw,22px);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:18px}
+  .finder-opts{display:flex;flex-wrap:wrap;gap:10px}
+  .finder-opts button{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer;transition:.12s;text-align:left}
+  .finder-opts button:hover{border-color:var(--lime);color:var(--lime)}
+  .rec-tier{color:var(--lime);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+  .rec-name{font-size:clamp(22px,4vw,28px);font-weight:800;text-transform:uppercase;margin:4px 0}
+  .rec-meta{color:var(--ink);font-weight:700;font-size:15px}
+  .rec-why{color:var(--mut);margin:10px 0 18px;max-width:60ch}
+  .finder-actions{display:flex;gap:12px;flex-wrap:wrap}
+  .finder-back{margin-top:16px;color:var(--mut);font-size:13px;background:none;border:0;cursor:pointer;text-decoration:underline;font-weight:600}
+  @media(max-width:880px){
+    .hero-grid,.two,.three,.split,.foot-grid{grid-template-columns:1fr}
+    .three{gap:16px}
+    .nav-links{display:none}
+    .menu-toggle{display:block}
+    .hero-art{order:-1}
+    .skullcard{max-width:300px;padding:28px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">
+      <img src="skull.png" width="40" height="40" alt="The Muscle Scraper logo">
+      <span class="logoword">THE MUSCLE SCRAPER<small>ELITE RECOVERY</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#what">What it is</a>
+      <a href="#finder">Find session</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#locations">Locations</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#book" class="btn btn-lime nav-cta">Book now</a>
+    </nav>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').style.display = (this.dataset.o==='1'?'none':'flex'); this.dataset.o=(this.dataset.o==='1'?'0':'1')">☰</button>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <canvas id="muscleCanvas" aria-hidden="true"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">Specialist · Precise · Results-driven</div>
+      <h1>Fix Pain.<br><span class="lime">Restore</span> Movement.<br>Upgrade Performance.</h1>
+      <p class="lead">Targeted muscle scraping to remove restrictions and restore movement — helping people when traditional therapy failed.</p>
+      <div class="hero-ctas">
+        <a href="#book" class="btn btn-lime">Book a session</a>
+        <a href="#assistant" class="btn btn-ghost" onclick="openChat();return false;">Is it right for me?</a>
+      </div>
+      <div class="badges">
+        <div class="badge"><b>478</b><span>5-star reviews</span></div>
+        <div class="badge"><b>19K</b><span>Followers</span></div>
+        <div class="badge"><b>100%</b><span>Recommend</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="scrape-hint" id="scrapeHint">↔ Drag across the muscle</div>
+</section>
+
+<!-- WHAT IT IS -->
+<section class="sec" id="what">
+  <div class="wrap">
+    <div class="eyebrow">What is muscle scraping?</div>
+    <h2 style="margin:10px 0 20px">Pain that other therapy<br>couldn't shift.</h2>
+    <div class="two">
+      <div>
+        <p class="muted">Muscle scraping sits under <b class="lime">IASTM</b> (Instrument Assisted Soft Tissue Mobilisation) — a myofascial release technique that relieves pain in the fascia, the connective tissue supporting your muscles, joints and bones.</p>
+        <p class="muted" style="margin-top:14px">Fascia should be elastic and movable. When it becomes thick, sticky or dried out it restricts movement and refers pain elsewhere — it's not unusual for shoulder pain to actually radiate from a tight calf. Compensating for the loss of movement quietly creates more tightness, leading to widespread discomfort.</p>
+        <p class="muted" style="margin-top:14px">Unlike a relaxing sports or deep-tissue massage, this is intense and at times painful. We use <b class="lime">304 surgical-grade steel bars</b>, purpose-made to stretch tissue and break down knots that hands alone can't reach.</p>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Common treatment areas</h3>
+          <div class="chiplist">
+            <span class="chip">Lower back</span><span class="chip">Neck</span><span class="chip">Shoulders</span>
+            <span class="chip">Arms</span><span class="chip">Hips</span><span class="chip">Quads</span>
+            <span class="chip">Legs</span><span class="chip">Calves</span><span class="chip">Jaw</span>
+          </div>
+          <h3 style="margin-top:22px">What it does</h3>
+          <div class="chiplist">
+            <span class="chip">↑ Range of motion</span><span class="chip">↓ Pain & soreness</span>
+            <span class="chip">Faster recovery</span><span class="chip">Better circulation</span>
+            <span class="chip">Relieves stress</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SESSION FINDER -->
+<section class="sec" id="finder">
+  <div class="wrap">
+    <div class="eyebrow">Not sure which to book?</div>
+    <h2 style="margin:10px 0 8px">Find your session</h2>
+    <p class="muted">Answer one or two quick questions and we'll point you to the right treatment.</p>
+    <div class="finder-card">
+      <div class="finder-q" id="finderQ"></div>
+      <div class="finder-opts" id="finderOpts"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing" style="background:var(--panel2)">
+  <div class="wrap">
+    <div class="price-head">
+      <div>
+        <div class="eyebrow">Treatment pricing</div>
+        <h2 style="margin-top:10px">Muscle Scraping</h2>
+        <p class="muted" style="margin-top:6px">Effective 1st June 2026 · Rick Howarth — Bury &amp; Preston</p>
+      </div>
+      <a href="#book" class="btn btn-lime">Book now</a>
+    </div>
+    <div class="ptable">
+      <div class="prow start">
+        <div>
+          <div class="ptier">★ Start here — all new clients</div>
+          <div class="pname">Performance Assessment &amp; Muscle Scraping</div>
+          <div class="pdesc">Full assessment + targeted treatment for new clients</div>
+        </div>
+        <div class="pright"><div class="pmins">55 MINS</div><div class="pprice">£130</div></div>
+      </div>
+      <div class="prow">
+        <div>
+          <div class="ptier">Foundation &amp; Recovery</div>
+          <div class="pname">Advanced Session</div>
+          <div class="pdesc">Ongoing treatment to maintain results</div>
+        </div>
+        <div class="pright"><div class="pmins">55 MINS</div><div class="pprice">£100</div></div>
+      </div>
+      <div class="prow">
+        <div>
+          <div class="ptier">Foundation &amp; Recovery</div>
+          <div class="pname">Focused Recovery Session</div>
+          <div class="pdesc">Focused work to address specific areas</div>
+        </div>
+        <div class="pright"><div class="pmins">45 MINS</div><div class="pprice">£90</div></div>
+      </div>
+      <div class="prow">
+        <div>
+          <div class="ptier">Foundation &amp; Recovery</div>
+          <div class="pname">Maintenance Session</div>
+          <div class="pdesc">Ideal for maintenance between treatments</div>
+        </div>
+        <div class="pright"><div class="pmins">30 MINS</div><div class="pprice">£80</div></div>
+      </div>
+      <div class="prow">
+        <div>
+          <div class="ptier">Performance treatment</div>
+          <div class="pname">Muscle Scraping Pro</div>
+          <div class="pdesc">Deeper treatment across multiple areas</div>
+        </div>
+        <div class="pright"><div class="pmins">90 MINS</div><div class="pprice">£180</div></div>
+      </div>
+      <div class="prow">
+        <div>
+          <div class="ptier">Performance treatment</div>
+          <div class="pname">Elite Full Body Performance Treatment</div>
+          <div class="pdesc">Complete full body reset</div>
+        </div>
+        <div class="pright"><div class="pmins">120 MINS</div><div class="pprice">£240</div></div>
+      </div>
+      <div class="prow emerg">
+        <div>
+          <div class="ptier">⏱ Priority access — same day</div>
+          <div class="pname">Emergency Priority Treatment</div>
+          <div class="pdesc">Limited slots. Premium rate.</div>
+        </div>
+        <div class="pright"><div class="pmins">55 MINS</div><div class="pprice">£200</div></div>
+      </div>
+    </div>
+    <p class="price-note">New to this and a little nervous? <b class="lime">Kirsty (The Muscle Sculptor)</b> offers a gentler, lower-priced first session at the Bury hub — from £55, including Dry Needling (£60). <a href="#book" class="lime" style="font-weight:700">See booking options ↓</a></p>
+  </div>
+</section>
+
+<!-- LOCATIONS & BOOK -->
+<section class="sec" id="locations">
+  <div class="wrap">
+    <div class="eyebrow">Locations &amp; booking</div>
+    <h2 style="margin:10px 0 8px" id="book">Choose where to book</h2>
+    <p class="muted" style="margin-bottom:26px">First time? Choose the <b>New Client / Performance Assessment</b> when you book.</p>
+    <div class="three">
+      <div class="loc">
+        <div class="who">Rick Howarth</div>
+        <h3>The Human Upgrade Hub — Bury</h3>
+        <address>Unit 2, 1–7 Taylor Street, Bury, BL9 6DT</address>
+        <div class="hours">
+          <div><span>Mon</span><span>Closed</span></div>
+          <div><span>Tue</span><span>13:30–16:30 · 17:00–20:00</span></div>
+          <div><span>Wed</span><span>12:30–15:00 · 16:00–19:00</span></div>
+          <div><span>Thu</span><span>Closed</span></div>
+          <div><span>Fri</span><span>13:30–16:30 · 17:00–20:00</span></div>
+          <div><span>Sat</span><span>10:30–13:30 · 14:00–17:00</span></div>
+          <div><span>Sun</span><span>14:00–18:00</span></div>
+        </div>
+        <a href="https://themusclescraperbolton.booksy.com" target="_blank" rel="noopener" class="btn btn-lime">Book Bury ↗</a>
+      </div>
+      <div class="loc">
+        <div class="who">Rick Howarth</div>
+        <h3>Next Level Gym — Preston</h3>
+        <address>Capital Trade Park, London Way, Walton-le-Dale, PR5 4AW</address>
+        <div class="hours">
+          <div><span>Reviews</span><span>5.0 ★ (99)</span></div>
+          <div><span>Includes</span><span>Emergency same-day slots</span></div>
+          <div class="muted" style="margin-top:8px">Same treatment menu as Bury. Check live availability on Booksy.</div>
+        </div>
+        <a href="https://themusclescraperchorley.booksy.com" target="_blank" rel="noopener" class="btn btn-lime" style="margin-top:auto">Book Preston ↗</a>
+      </div>
+      <div class="loc">
+        <div class="who">Kirsty — The Muscle Sculptor</div>
+        <h3>The Human Upgrade Hub — Bury</h3>
+        <address>Unit 2, 1–7 Taylor Street, Bury, BL9 6DT</address>
+        <div class="hours">
+          <div><span>From</span><span>£55 · gentler tier</span></div>
+          <div><span>Also offers</span><span>Multi Dry Needling £60</span></div>
+          <div class="muted" style="margin-top:8px">A great place to start if you're nervous or new to scraping.</div>
+        </div>
+        <a href="https://themusclesculptor.booksy.com" target="_blank" rel="noopener" class="btn btn-lime" style="margin-top:auto">Book Kirsty ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT TO EXPECT -->
+<section class="sec" id="expect" style="background:var(--panel2)">
+  <div class="wrap">
+    <div class="eyebrow">Does it hurt? Let's be honest</div>
+    <h2 style="margin:10px 0 20px">What to expect</h2>
+    <div class="split">
+      <div>
+        <p class="muted">It can be intense and, in places, painful — but it shouldn't be <i>unbearable</i>. Your therapist works to your limit and adjusts as they go, so tell them what you're feeling. Afterwards you may be sore, bruise, or feel a mild sunburn-like sensation for a day or two.</p>
+        <p class="muted" style="margin-top:14px">The pay-off is what keeps people coming back: greater range of motion, less pain, and less stiffness — often felt the very next day.</p>
+        <div class="note" style="margin-top:18px"><b class="lime">Nervous?</b> You're in good company. First-timers regularly say <i>"not as painful as I expected"</i> and <i>"I could have fallen asleep."</i> Ask about starting with Kirsty for a gentler first session.</div>
+      </div>
+      <div class="card">
+        <h3>Aftercare</h3>
+        <p class="muted" style="margin-top:6px">Three simple things to get the best result:</p>
+        <div class="chiplist" style="margin-top:12px">
+          <span class="chip">💧 Stay hydrated</span>
+          <span class="chip">🍽 Eat — fuel repair</span>
+          <span class="chip">🤸 Stretch the tissue</span>
+        </div>
+        <h3 style="margin-top:22px">Cancellation policy</h3>
+        <p class="muted" style="margin-top:6px;font-size:14px">A minimum of <b>48 hours' notice</b> is required to cancel. If you can't attend, either cancel at least 48 hours before, or arrange for someone to take your place. Less than 48 hours' notice (and no replacement) means the full session fee is charged — this lets us offer your slot to someone waiting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="eyebrow">478 five-star reviews · 100% recommend</div>
+    <h2 style="margin:10px 0 26px">Don't take our word for it</h2>
+    <div class="three">
+      <div class="rev"><div class="stars">★★★★★</div><p>"This works. If you value your time don't waste it on physios or the like. Don't waste your money elsewhere either. This works."</p><div class="by">— John, Preston</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"Severe back pain… following the treatment I literally jumped off the treatment couch. The range of movement I have back the next day is amazing."</p><div class="by">— Marc, Preston</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"Months of being injured and losing hope — I finally feel like there's hope. My body feels different already."</p><div class="by">— Ellie, Bury</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"Not for the faint hearted BUT totally worth it. I was nervous — made to feel welcome and in very knowledgeable hands."</p><div class="by">— Hayley, Preston</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"Wasn't as painful as I expected, but even one morning after I feel such a huge difference — so much more movement."</p><div class="by">— Ruby (with Kirsty), Bury</div></div>
+      <div class="rev"><div class="stars">★★★★★</div><p>"10/10. Super friendly, clean, top services. Best thing I've ever done."</p><div class="by">— Kyle, Bury</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA strip -->
+<section class="sec-tight" style="text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <h2>Ready to move better?</h2>
+    <p class="muted" style="margin:12px 0 22px">Book online in under a minute, or ask our assistant if it's right for you.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="#book" class="btn btn-lime">Book a session</a>
+      <button class="btn btn-ghost" onclick="openChat()">Ask the assistant</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="wrap foot-grid">
+    <div>
+      <div class="brand" style="margin-bottom:12px"><span class="logoword">THE MUSCLE SCRAPER<small>ELITE RECOVERY</small></span></div>
+      <p style="font-size:14px">Targeted muscle scraping to remove restrictions and restore movement. Bury &amp; Preston, North West England.</p>
+      <p style="font-size:12px;margin-top:10px">Myofascial release therapy — medically reviewed (Dan Brennan, MD, WebMD). This site is informational and not a medical diagnosis.</p>
+    </div>
+    <div>
+      <h3 style="color:var(--ink);font-size:14px;text-transform:uppercase;margin-bottom:10px">Contact</h3>
+      <p style="font-size:14px"><a href="tel:+447305905859">07305 905859</a> (call / WhatsApp)</p>
+      <p style="font-size:14px"><a href="mailto:help@themusclescraper.co.uk">help@themusclescraper.co.uk</a></p>
+      <div class="socials">
+        <a href="https://www.instagram.com/themusclescraper" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.tiktok.com/@themusclescraper" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://www.facebook.com/themusclescraper" target="_blank" rel="noopener">Facebook</a>
+      </div>
+    </div>
+    <div>
+      <h3 style="color:var(--ink);font-size:14px;text-transform:uppercase;margin-bottom:10px">Book</h3>
+      <p style="font-size:14px"><a href="https://themusclescraperbolton.booksy.com" target="_blank" rel="noopener">Rick — Bury ↗</a></p>
+      <p style="font-size:14px"><a href="https://themusclescraperchorley.booksy.com" target="_blank" rel="noopener">Rick — Preston ↗</a></p>
+      <p style="font-size:14px"><a href="https://themusclesculptor.booksy.com" target="_blank" rel="noopener">Kirsty — Bury ↗</a></p>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:30px;font-size:12px;opacity:.6">© <span id="yr"></span> The Muscle Scraper · Elite Recovery. All rights reserved.</div>
+</footer>
+
+<!-- CHAT WIDGET -->
+<button id="chatBtn" onclick="openChat()">💬 Ask us</button>
+<div id="chatPanel" aria-live="polite">
+  <div class="chat-head">
+    <span class="dot"></span>
+    <div><b>Muscle Scraper assistant</b><small>Answers questions · finds your next step</small></div>
+    <button class="x" onclick="closeChat()" aria-label="Close">×</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-opts" id="chatOpts"></div>
+  <div class="chat-disc">Guided assistant. No diagnosis. For anything urgent or medical, we'll point you to a person.</div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ---------- Guided assistant ---------- */
+const BOOK = {
+  bury:'https://themusclescraperbolton.booksy.com',
+  preston:'https://themusclescraperchorley.booksy.com',
+  kirsty:'https://themusclesculptor.booksy.com'
+};
+const body = () => document.getElementById('chatBody');
+const opts = () => document.getElementById('chatOpts');
+
+function bot(html){ const d=document.createElement('div'); d.className='msg bot'; d.innerHTML=html; body().appendChild(d); body().scrollTop=body().scrollHeight; }
+function user(t){ const d=document.createElement('div'); d.className='msg user'; d.textContent=t; body().appendChild(d); body().scrollTop=body().scrollHeight; }
+function setOpts(list){ opts().innerHTML=''; list.forEach(o=>{ const b=document.createElement('button'); b.className='opt'+(o.cls?(' '+o.cls):''); b.textContent=o.label; b.onclick=o.act; opts().appendChild(b); }); }
+function bookBtn(url,label){ return '<div style="margin-top:8px"><a class="opt book" style="display:inline-block;text-decoration:none" href="'+url+'" target="_blank" rel="noopener">'+label+' ↗</a></div>'; }
+
+const NODES = {
+  start(){
+    setOpts([
+      {label:'Is it right for me?',act:()=>{user('Is it right for me?');NODES.suit();}},
+      {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
+      {label:'Book now',act:()=>{user('Book now');NODES.book();}},
+      {label:'Aftercare & policy',act:()=>{user('Aftercare & policy');NODES.after();}}
+    ]);
+  },
+  suit(){
+    bot("I can't diagnose, but I can tell you whether this is the kind of thing we work with a lot. Roughly where's the problem?");
+    setOpts([
+      {label:'Back / neck',act:()=>{user('Back / neck');NODES.area('Two of the most common areas we treat. Tightness here often refers pain elsewhere — exactly what muscle scraping targets.');}},
+      {label:'Shoulders / arms',act:()=>{user('Shoulders / arms');NODES.area('Very common. Worth knowing shoulder pain sometimes radiates from elsewhere (even the calf) — we work the whole chain, not just the sore spot.');}},
+      {label:'Legs / hips',act:()=>{user('Legs / hips');NODES.area('Frequently treated, especially for runners and gym-goers carrying tightness through the hips, quads and calves.');}},
+      {label:'Sport / performance',act:()=>{user('Sport / performance');NODES.area('The Performance tier (Pro / Elite Full Body) is built for this — recovery, range of motion and a full-body reset.');}},
+      {label:'Other therapy failed',act:()=>{user('Other therapy failed');NODES.area("That's exactly who we're for — 'helping people when traditional therapy failed.' Many clients come after sports or deep-tissue massage didn't shift it.");}},
+      {label:"I'm nervous",act:()=>{user("I'm nervous");NODES.nervous();}}
+    ]);
+  },
+  area(msg){
+    bot(msg+'<br><br>Want to book, or start gentler with Kirsty?');
+    setOpts([
+      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
+      {label:'I\'m nervous',act:()=>{user("I'm nervous");NODES.nervous();}},
+      {label:'Ask something else',act:()=>{user('Something else');NODES.menu();}}
+    ]);
+  },
+  nervous(){
+    bot("Totally normal. Honest answer: it can be intense and you may be a little sore after — but it shouldn't be unbearable, and the therapist adjusts to you. First-timers often say <i>\"not as painful as I expected.\"</i><br><br>If you'd like a gentler first session, <b>Kirsty (The Muscle Sculptor)</b> at the Bury hub is a great place to start (from £55)."+bookBtn(BOOK.kirsty,'Book with Kirsty'));
+    setOpts([
+      {label:'Book Rick instead',cls:'book',act:()=>{user('Book Rick');NODES.book();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  prices(){
+    bot("Here's the menu (Rick — Bury & Preston):<br>• <b>New client — Performance Assessment</b> · £130 / 55min<br>• Advanced Session · £100 / 55min<br>• Focused Recovery · £90 / 45min<br>• Maintenance · £80 / 30min<br>• Muscle Scraping Pro · £180 / 90min<br>• Elite Full Body · £240 / 120min<br>• Emergency (same-day) · £200 / 55min<br><br>Kirsty's tier starts at £55. First time? Book the New Client / Assessment.");
+    setOpts([
+      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
+      {label:'Is it right for me?',act:()=>{user('Is it right for me?');NODES.suit();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  book(){
+    bot("Which works best for you?<br><br><b>Rick — Bury</b> (The Human Upgrade Hub)"+bookBtn(BOOK.bury,'Book Bury')+"<b style='display:inline-b
