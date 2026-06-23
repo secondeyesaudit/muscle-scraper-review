@@ -55,7 +55,7 @@
   /* HERO */
   .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);min-height:86vh;display:flex;align-items:center}
   #muscleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;touch-action:pan-y;cursor:crosshair}
-  .hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(11,11,11,.97),rgba(11,11,11,.86) 36%,rgba(11,11,11,.4) 66%,rgba(11,11,11,.6))}
+  .hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(11,11,11,.96),rgba(11,11,11,.82) 32%,rgba(11,11,11,.18) 60%,rgba(11,11,11,0))}
   .hero-inner{position:relative;z-index:2;width:100%;pointer-events:none}
   .hero-copy{max-width:620px;padding:54px 0}
   .hero-ctas a,.hero-ctas button{pointer-events:auto}
@@ -532,4 +532,220 @@ const NODES = {
     ]);
   },
   book(){
-    bot("Which works best for you?<br><br><b>Rick — Bury</b> (The Human Upgrade Hub)"+bookBtn(BOOK.bury,'Book Bury')+"<b style='display:inline-b
+    bot("Which works best for you?<br><br><b>Rick — Bury</b> (The Human Upgrade Hub)"+bookBtn(BOOK.bury,'Book Bury')+"<b style='display:inline-block;margin-top:10px'>Rick — Preston</b> (Next Level Gym)"+bookBtn(BOOK.preston,'Book Preston')+"<b style='display:inline-block;margin-top:10px'>Kirsty — Bury</b> (gentler tier, from £55)"+bookBtn(BOOK.kirsty,'Book Kirsty'));
+    setOpts([
+      {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
+      {label:'Aftercare & policy',act:()=>{user('Aftercare & policy');NODES.after();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  after(){
+    bot("<b>Aftercare:</b> stay hydrated, eat (your body needs fuel to repair) and stretch the freshly-released tissue. Some soreness, bruising or a sunburn-like feeling for a day or two is normal.<br><br><b>Cancellations:</b> 48 hours' notice minimum. If you can't attend, cancel 48h before or send someone in your place — otherwise the full fee applies.");
+    setOpts([
+      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  menu(){ bot('What do you need help with?'); NODES.start(); }
+};
+
+let started=false;
+function openChat(){
+  document.getElementById('chatPanel').classList.add('open');
+  document.getElementById('chatBtn').style.display='none';
+  if(!started){ started=true; bot("Hi 👋 I can help you find the right next step without making you explain everything twice."); bot('What do you need help with today?'); NODES.start(); }
+}
+function closeChat(){
+  document.getElementById('chatPanel').classList.remove('open');
+  document.getElementById('chatBtn').style.display='flex';
+}
+</script>
+
+<!-- Interactive premium hero: chrome scraper gliding over muscle -->
+<script>
+(function(){
+  const canvas=document.getElementById('muscleCanvas');
+  if(!canvas||!canvas.getContext) return;
+  const ctx=canvas.getContext('2d');
+  const hero=document.getElementById('hero');
+  const hint=document.getElementById('scrapeHint');
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DPR=Math.min(window.devicePixelRatio||1,2);
+  let W=0,H=0;
+  const M={cx:0,cy:0,L:0,T:0};
+  const FIBERS=16, SAMPLES=46;
+  let fibers=[];
+
+  function resize(){
+    const r=hero.getBoundingClientRect();
+    W=r.width; H=r.height;
+    canvas.width=Math.round(W*DPR); canvas.height=Math.round(H*DPR);
+    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    M.cx=W>880?W*0.72:W*0.5; M.cy=H*0.5;
+    M.L=Math.min(W*0.42,540); M.T=Math.min(H*0.30,210);
+    fibers=[];
+    for(let i=0;i<FIBERS;i++) fibers.push({f:(i/(FIBERS-1))*2-1, glow:new Array(SAMPLES).fill(0)});
+  }
+  const bulge=t=>Math.cos(t*Math.PI/2);
+
+  let sx=0,sy=0,tx=0,ty=0,px=0,py=0,angle=0,lastInput=-9999,started=false,t=0;
+  let ripples=[];
+
+  function pointer(e){
+    const r=canvas.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+    tx=cx; ty=cy; lastInput=performance.now(); started=true;
+    if(hint) hint.style.opacity='0';
+  }
+  canvas.addEventListener('pointermove',pointer);
+  canvas.addEventListener('pointerdown',pointer);
+  canvas.addEventListener('touchmove',pointer,{passive:true});
+
+  function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+
+  function frame(now){
+    t+=0.016;
+    const idle=now-lastInput>1600;
+    if(idle){
+      if(reduce){ tx=M.cx; ty=M.cy; }
+      else { const a=t*0.6; tx=M.cx+Math.sin(a)*M.L*0.82; ty=M.cy+Math.sin(a*1.7)*M.T*0.45; }
+    }
+    px=sx; py=sy;
+    sx+=(tx-sx)*0.18; sy+=(ty-sy)*0.18;
+    const dx=sx-px, dy=sy-py, sp=Math.hypot(dx,dy);
+    if(sp>0.6) angle=Math.atan2(dy,dx);
+    if(sp>1.4 && Math.random()<0.6) ripples.push({x:sx,y:sy,r:6,life:1});
+
+    ctx.clearRect(0,0,W,H);
+
+    // muscle belly fill
+    const grad=ctx.createLinearGradient(M.cx-M.L,M.cy-M.T,M.cx+M.L,M.cy+M.T);
+    grad.addColorStop(0,'rgba(45,80,50,0)');
+    grad.addColorStop(0.5,'rgba(80,135,86,0.9)');
+    grad.addColorStop(1,'rgba(30,55,36,0)');
+    ctx.beginPath();
+    ctx.moveTo(M.cx-M.L,M.cy);
+    ctx.bezierCurveTo(M.cx-M.L*0.5,M.cy-M.T,M.cx+M.L*0.5,M.cy-M.T,M.cx+M.L,M.cy);
+    ctx.bezierCurveTo(M.cx+M.L*0.5,M.cy+M.T,M.cx-M.L*0.5,M.cy+M.T,M.cx-M.L,M.cy);
+    ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
+
+    // fibers (base)
+    for(const fb of fibers){
+      ctx.beginPath();
+      for(let s=0;s<SAMPLES;s++){
+        const tt=(s/(SAMPLES-1))*2-1;
+        const x=M.cx+tt*M.L, y=M.cy+fb.f*M.T*bulge(tt)*0.92;
+        const d=Math.hypot(x-sx,y-sy);
+        if(d<78) fb.glow[s]=Math.max(fb.glow[s],1-d/78);
+        fb.glow[s]*=0.945;
+        if(s===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle='rgba(130,178,128,'+(0.5+0.22*Math.abs(fb.f))+')';
+      ctx.lineWidth=1.7; ctx.stroke();
+    }
+    // fibers (lime release glow)
+    for(const fb of fibers){
+      for(let s=0;s<SAMPLES-1;s++){
+        const g=fb.glow[s]; if(g<0.06)continue;
+        const t0=(s/(SAMPLES-1))*2-1, t1=((s+1)/(SAMPLES-1))*2-1;
+        const x0=M.cx+t0*M.L, y0=M.cy+fb.f*M.T*bulge(t0)*0.92;
+        const x1=M.cx+t1*M.L, y1=M.cy+fb.f*M.T*bulge(t1)*0.92;
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1);
+        ctx.strokeStyle='rgba(181,242,61,'+(g*0.9)+')';
+        ctx.lineWidth=1.2+g*2.4; ctx.shadowColor='rgba(181,242,61,0.85)'; ctx.shadowBlur=8*g;
+        ctx.stroke();
+      }
+    }
+    ctx.shadowBlur=0;
+
+    // ripples
+    for(let i=ripples.length-1;i>=0;i--){
+      const rp=ripples[i]; rp.r+=2.6; rp.life-=0.03;
+      if(rp.life<=0){ripples.splice(i,1);continue;}
+      ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,Math.PI*2);
+      ctx.strokeStyle='rgba(181,242,61,'+(rp.life*0.4)+')'; ctx.lineWidth=2; ctx.stroke();
+    }
+
+    // chrome scraper
+    ctx.save();
+    ctx.translate(sx,sy); ctx.rotate(angle+Math.PI/2);
+    const barL=124, barT=15;
+    ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=14; ctx.shadowOffsetY=4;
+    const bg=ctx.createLinearGradient(0,-barT/2,0,barT/2);
+    bg.addColorStop(0,'#eef2f5'); bg.addColorStop(0.34,'#aab2ba'); bg.addColorStop(0.5,'#ffffff'); bg.addColorStop(0.66,'#878f97'); bg.addColorStop(1,'#565d64');
+    roundRect(ctx,-barL/2,-barT/2,barL,barT,barT/2); ctx.fillStyle=bg; ctx.fill();
+    ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+    const ph=Math.sin(t*2)*0.5+0.5;
+    const sg=ctx.createLinearGradient(-barL/2,0,barL/2,0);
+    sg.addColorStop(Math.max(0,ph-0.12),'rgba(255,255,255,0)');
+    sg.addColorStop(ph,'rgba(255,255,255,0.85)');
+    sg.addColorStop(Math.min(1,ph+0.12),'rgba(255,255,255,0)');
+    roundRect(ctx,-barL/2,-barT/2,barL,barT*0.48,barT*0.24); ctx.fillStyle=sg; ctx.fill();
+    ctx.fillStyle='#cfd6dc';
+    ctx.beginPath();ctx.arc(-barL/2,0,barT*0.55,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(barL/2,0,barT*0.55,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize',resize);
+  resize(); sx=tx=M.cx; sy=ty=M.cy;
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<!-- Session finder (triage) -->
+<script>
+(function(){
+  const q=document.getElementById('finderQ');
+  const o=document.getElementById('finderOpts');
+  if(!q||!o) return;
+  const KIRSTY='https://themusclesculptor.booksy.com';
+  const bookBtn='<a class="btn btn-lime" href="#book">Choose location &amp; book ↓</a>';
+  const priceBtn='<a class="btn btn-ghost" href="#pricing">See full pricing</a>';
+  const askBtn='<button class="btn btn-ghost" onclick="openChat()">Ask the assistant</button>';
+  function opts(list){ o.innerHTML=''; list.forEach(it=>{const b=document.createElement('button');b.innerHTML=it.label;b.onclick=it.act;o.appendChild(b);}); }
+  function result(rec){
+    q.textContent='Your recommended session';
+    o.innerHTML='<div class="rec-tier">'+rec.tier+'</div>'+
+      '<div class="rec-name">'+rec.name+'</div>'+
+      '<div class="rec-meta">'+rec.meta+'</div>'+
+      '<div class="rec-why">'+rec.why+'</div>'+
+      '<div class="finder-actions">'+rec.cta+'</div>'+
+      '<button class="finder-back" onclick="window.__finderStart()">↺ Start over</button>';
+  }
+  function goal(){
+    q.textContent='What do you need today?';
+    opts([
+      {label:'Maintain my results',act:()=>result({tier:'Foundation & Recovery',name:'Advanced Session',meta:'£100 · 55 min',why:'Ongoing treatment to keep you moving well and hold onto your progress.',cta:bookBtn+priceBtn})},
+      {label:'Target one specific area',act:()=>result({tier:'Foundation & Recovery',name:'Focused Recovery Session',meta:'£90 · 45 min',why:'Focused work to address one specific problem area.',cta:bookBtn+priceBtn})},
+      {label:'Quick top-up between sessions',act:()=>result({tier:'Express & Maintenance',name:'Maintenance Session',meta:'£80 · 30 min',why:'A shorter session, ideal for maintenance between full treatments.',cta:bookBtn+priceBtn})},
+      {label:'Go deep across multiple areas',act:()=>result({tier:'Performance',name:'Muscle Scraping Pro',meta:'£180 · 90 min',why:'Deeper treatment across multiple areas in one longer session.',cta:bookBtn+priceBtn})},
+      {label:'Full body reset',act:()=>result({tier:'Performance',name:'Elite Full Body Performance Treatment',meta:'£240 · 120 min',why:'The complete reset — head to toe.',cta:bookBtn+priceBtn})},
+      {label:'I need help today (urgent)',act:()=>result({tier:'Priority access · same-day',name:'Emergency Priority Treatment',meta:'£200 · 55 min',why:'Limited same-day slots for when you can’t wait. Premium rate.',cta:bookBtn+priceBtn})},
+      {label:'I’m nervous / want it gentler',act:()=>result({tier:'With Kirsty — The Muscle Sculptor',name:'New Client Treatment',meta:'from £55 · Bury',why:'Kirsty offers a gentler, lower-priced session — a great first step if you’re unsure. Her clients often say it was “not as painful as expected.”',cta:'<a class="btn btn-lime" href="'+KIRSTY+'" target="_blank" rel="noopener">Book with Kirsty ↗</a>'+priceBtn})}
+    ]);
+  }
+  function start(){
+    q.textContent='First time with The Muscle Scraper?';
+    opts([
+      {label:'Yes — it’s my first visit',act:()=>result({tier:'★ Start here',name:'Performance Assessment & Muscle Scraping',meta:'£130 · 55 min',why:'Every new client starts here — a full assessment plus targeted treatment so we understand your body before anything else.',cta:bookBtn+priceBtn+askBtn})},
+      {label:'No — I’ve been before',act:goal}
+    ]);
+  }
+  window.__finderStart=start;
+  start();
+})();
+</script>
+
+<!-- PWA service worker -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+</script>
+</body>
+</html>
