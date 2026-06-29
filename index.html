@@ -488,72 +488,108 @@ function user(t){ const d=document.createElement('div'); d.className='msg user';
 function setOpts(list){ opts().innerHTML=''; list.forEach(o=>{ const b=document.createElement('button'); b.className='opt'+(o.cls?(' '+o.cls):''); b.textContent=o.label; b.onclick=o.act; opts().appendChild(b); }); }
 function bookBtn(url,label){ return '<div style="margin-top:8px"><a class="opt book" style="display:inline-block;text-decoration:none" href="'+url+'" target="_blank" rel="noopener">'+label+' ↗</a></div>'; }
 
+const WA='https://wa.me/447305905859';
+const TEL='tel:+447305905859';
+function handoff(msg){ return '<div style="margin-top:8px"><a class="opt book" style="display:inline-block;text-decoration:none" href="'+WA+'?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">Message Rick (WhatsApp) ↗</a> <a class="opt" style="display:inline-block;text-decoration:none" href="'+TEL+'">Call / text</a></div>'; }
+const assessBtn = bookBtn(BOOK.bury,'Book a New Client Assessment');
+
 const NODES = {
   start(){
     setOpts([
-      {label:'Is it right for me?',act:()=>{user('Is it right for me?');NODES.suit();}},
+      {label:'Can it help my pain/injury?',act:()=>{user('Can it help my pain or injury?');NODES.suit();}},
       {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
-      {label:'Book now',act:()=>{user('Book now');NODES.book();}},
-      {label:'Aftercare & policy',act:()=>{user('Aftercare & policy');NODES.after();}}
+      {label:'Book / availability',act:()=>{user('Book / availability');NODES.book();}},
+      {label:'Change a booking',act:()=>{user('Change a booking');NODES.reschedule();}},
+      {label:'Where are you based?',act:()=>{user('Where are you based?');NODES.locations();}}
     ]);
   },
   suit(){
-    bot("I can't diagnose, but I can tell you whether this is the kind of thing we work with a lot. Roughly where's the problem?");
+    bot("Tell me roughly what's going on and I'll be straight with you — I can't diagnose, but I'll tell you if it's the kind of thing Rick works with a lot.");
     setOpts([
-      {label:'Back / neck',act:()=>{user('Back / neck');NODES.area('Two of the most common areas we treat. Tightness here often refers pain elsewhere — exactly what muscle scraping targets.');}},
-      {label:'Shoulders / arms',act:()=>{user('Shoulders / arms');NODES.area('Very common. Worth knowing shoulder pain sometimes radiates from elsewhere (even the calf) — we work the whole chain, not just the sore spot.');}},
-      {label:'Legs / hips',act:()=>{user('Legs / hips');NODES.area('Frequently treated, especially for runners and gym-goers carrying tightness through the hips, quads and calves.');}},
-      {label:'Sport / performance',act:()=>{user('Sport / performance');NODES.area('The Performance tier (Pro / Elite Full Body) is built for this — recovery, range of motion and a full-body reset.');}},
-      {label:'Other therapy failed',act:()=>{user('Other therapy failed');NODES.area("That's exactly who we're for — 'helping people when traditional therapy failed.' Many clients come after sports or deep-tissue massage didn't shift it.");}},
-      {label:"I'm nervous",act:()=>{user("I'm nervous");NODES.nervous();}}
+      {label:'Back / neck / shoulder',act:()=>{user('Back / neck / shoulder');NODES.ok('Three of the most common areas Rick treats. Tightness here often refers pain elsewhere — exactly what muscle scraping targets.');}},
+      {label:'Sports / gym tightness',act:()=>{user('Sports / gym tightness');NODES.ok('Bread and butter for the Performance tier — range of motion, recovery and a full-body option for athletes.');}},
+      {label:'Old injury / scar tissue',act:()=>{user('Old injury / scar tissue');NODES.ok('Scar tissue and old adhesions (Achilles, calf, shoulder and the like) are very common here — the steel tools are made for exactly that. An assessment is the best first step so Rick can feel what is going on.');}},
+      {label:'After an operation / surgery',act:()=>{user('After surgery');NODES.care("Rick works with a lot of post-injury scar tissue — but anything post-surgical he likes to check with you personally before booking, to make sure it's the right time. Send him a quick note with the details and he'll tell you straight.","Hi Rick — I've had surgery/an operation and wanted to check if muscle scraping could help before I book. Details: ");}},
+      {label:'Nerve pain / sciatica',act:()=>{user('Nerve pain / sciatica');NODES.care("Nerve-type pain (sciatica, trapped nerves) can often be muscular in origin, but Rick will want to assess it rather than guess. Message him the details, or book an assessment and he'll take a proper look.","Hi Rick — I've got nerve-type pain (sciatica / trapped nerve). Can you tell me if scraping would help? Details: ");}},
+      {label:'Asking for someone else',act:()=>{user('Asking for someone else');NODES.care("No problem — pop a quick note to Rick about their issue and he'll tell you honestly whether it's worth them coming in.","Hi Rick — asking on behalf of someone. Their issue is: ");}},
+      {label:"I'm nervous about it",act:()=>{user("I'm nervous");NODES.nervous();}}
     ]);
   },
-  area(msg){
-    bot(msg+'<br><br>Want to book, or start gentler with Kirsty?');
+  ok(msg){
+    bot(msg+"<br><br>First visit is the <b>New Client Assessment</b> (from £110–£130, 55 min) — Rick assesses you, then treats. Want to book, or check with him first?"+assessBtn);
     setOpts([
-      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
-      {label:'I\'m nervous',act:()=>{user("I'm nervous");NODES.nervous();}},
-      {label:'Ask something else',act:()=>{user('Something else');NODES.menu();}}
+      {label:'Locations & availability',act:()=>{user('Availability');NODES.book();}},
+      {label:'Ask Rick first',act:()=>{user('Ask Rick first');NODES.askFirst();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  care(msg,prefill){
+    bot(msg+handoff(prefill));
+    setOpts([
+      {label:'Book an assessment anyway',cls:'book',act:()=>{user('Book an assessment');NODES.book();}},
+      {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  askFirst(){
+    bot("Send Rick a quick message with what's going on and he'll tell you straight whether he can help — usually the fastest way to a real answer."+handoff('Hi Rick — quick question on whether muscle scraping would suit my issue: '));
+    setOpts([
+      {label:'Book an assessment',cls:'book',act:()=>{user('Book an assessment');NODES.book();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
     ]);
   },
   nervous(){
-    bot("Totally normal. Honest answer: it can be intense and you may be a little sore after — but it shouldn't be unbearable, and the therapist adjusts to you. First-timers often say <i>\"not as painful as I expected.\"</i><br><br>If you'd like a gentler first session, <b>Kirsty (The Muscle Sculptor)</b> at the Bury hub is a great place to start (from £55)."+bookBtn(BOOK.kirsty,'Book with Kirsty'));
+    bot("Totally normal. Honest answer: it can be intense and you may be a little sore after — but it shouldn't be unbearable, and Rick works to your limit. First-timers often say <i>\"not as painful as I expected.\"</i><br><br>Prefer a gentler first session? <b>Kirsty (The Muscle Sculptor)</b> at the Bury hub is a great place to start (from £55)."+bookBtn(BOOK.kirsty,'Book with Kirsty'));
     setOpts([
       {label:'Book Rick instead',cls:'book',act:()=>{user('Book Rick');NODES.book();}},
       {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
     ]);
   },
   prices(){
-    bot("Here's the menu (Rick — Bury & Preston):<br>• <b>New client — Performance Assessment</b> · £130 / 55min<br>• Advanced Session · £100 / 55min<br>• Focused Recovery · £90 / 45min<br>• Maintenance · £80 / 30min<br>• Muscle Scraping Pro · £180 / 90min<br>• Elite Full Body · £240 / 120min<br>• Emergency (same-day) · £200 / 55min<br><br>Kirsty's tier starts at £55. First time? Book the New Client / Assessment.");
+    bot("Treatment menu:<br>• <b>New Client Assessment</b> · from £110–£130 / 55min (varies by location)<br>• Advanced Session · £100 / 55min<br>• Focused Recovery · £90 / 45min<br>• Maintenance · £80 / 30min<br>• Muscle Scraping Pro · £180 / 90min<br>• Elite Full Body (full body, 2 hrs) · £240<br>• Emergency / same-day · £200<br><br>Kirsty's tier starts at £55. Your booking link shows the exact price for your location.");
     setOpts([
-      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
-      {label:'Is it right for me?',act:()=>{user('Is it right for me?');NODES.suit();}},
+      {label:'Book / availability',cls:'book',act:()=>{user('Book');NODES.book();}},
+      {label:'Can it help my issue?',act:()=>{user('Can it help my issue?');NODES.suit();}},
       {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
     ]);
   },
   book(){
-    bot("Which works best for you?<br><br><b>Rick — Bury</b> (The Human Upgrade Hub)"+bookBtn(BOOK.bury,'Book Bury')+"<b style='display:inline-block;margin-top:10px'>Rick — Preston</b> (Next Level Gym)"+bookBtn(BOOK.preston,'Book Preston')+"<b style='display:inline-block;margin-top:10px'>Kirsty — Bury</b> (gentler tier, from £55)"+bookBtn(BOOK.kirsty,'Book Kirsty'));
+    bot("Booking and <b>live availability</b> are on Booksy — pick your nearest location and you'll see real-time slots. First time? Choose the <b>New Client Assessment</b>.<br><br>Rick works across several North-West sites (Bury, Preston and others depending on the day):"+bookBtn(BOOK.bury,'Book — Bury (Human Upgrade Hub)')+bookBtn(BOOK.preston,'Book — Preston (Next Level Gym)')+bookBtn(BOOK.kirsty,'Book — Kirsty (gentler tier)')+"<br><b>Need it today?</b> Same-day emergency slots are £200 (limited) — message Rick to grab one:"+handoff('Hi Rick — do you have any emergency/same-day slots? My issue is: '));
     setOpts([
       {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
       {label:'Aftercare & policy',act:()=>{user('Aftercare & policy');NODES.after();}},
       {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
     ]);
   },
-  after(){
-    bot("<b>Aftercare:</b> stay hydrated, eat (your body needs fuel to repair) and stretch the freshly-released tissue. Some soreness, bruising or a sunburn-like feeling for a day or two is normal.<br><br><b>Cancellations:</b> 48 hours' notice minimum. If you can't attend, cancel 48h before or send someone in your place — otherwise the full fee applies.");
+  reschedule(){
+    bot("Need to move or cancel? Quickest is through <b>Booksy</b> (your confirmation email or the Booksy app). Or message Rick with your name and what you're booked in for and he'll sort it.<br><br><b>Heads up:</b> 48 hours' notice avoids the full session fee."+handoff('Hi Rick — I need to change my booking. My name is ... and I am booked in for ...'));
     setOpts([
-      {label:'Book now',cls:'book',act:()=>{user('Book now');NODES.book();}},
+      {label:'Book something new',cls:'book',act:()=>{user('Book');NODES.book();}},
       {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
     ]);
   },
-  menu(){ bot('What do you need help with?'); NODES.start(); }
+  locations(){
+    bot("Rick works across several North-West locations depending on the day — including <b>Bury</b> (The Human Upgrade Hub), <b>Preston</b>, and other sites. Your Booksy booking link always shows the exact location and live times for each slot."+bookBtn(BOOK.bury,'See locations & book'));
+    setOpts([
+      {label:'Prices',act:()=>{user('Prices');NODES.prices();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  after(){
+    bot("<b>Aftercare:</b> stay hydrated, eat (your body needs fuel to repair) and stretch the freshly-released tissue. Some soreness, bruising or a sunburn-like feeling for a day or two is normal.<br><br><b>Cancellations:</b> 48 hours' notice minimum, or the full fee applies (you can send someone in your place).");
+    setOpts([
+      {label:'Book / availability',cls:'book',act:()=>{user('Book');NODES.book();}},
+      {label:'Start again',cls:'restart',act:()=>{user('Start again');NODES.menu();}}
+    ]);
+  },
+  menu(){ bot('What else can I help with?'); NODES.start(); }
 };
 
 let started=false;
 function openChat(){
   document.getElementById('chatPanel').classList.add('open');
   document.getElementById('chatBtn').style.display='none';
-  if(!started){ started=true; bot("Hi 👋 I can help you find the right next step without making you explain everything twice."); bot('What do you need help with today?'); NODES.start(); }
+  if(!started){ started=true; bot("Hi 👋 I can tell you if scraping suits your issue, give prices, sort booking or change an appointment — without making you explain everything twice."); bot('What do you need?'); NODES.start(); }
 }
 function closeChat(){
   document.getElementById('chatPanel').classList.remove('open');
